@@ -2,39 +2,82 @@
 title Payroll - Class Diagram
 skinparam classAttributeIconSize 0
 
-package payroll{
+package ch.etml.es.payroll{
 
     package Controllers{
-        class Employee{
-            - repository Repository.Employee;
+        class EmployeeController {
+            - repository : EmployeeRepository
+            + EmployeeController(repository : EmployeeRepository)
+            + all() : List<Employee>
+            + one(id : Long) : Employee
         }
-        class EmployeeNotFoundAdvice()
-        class EmployeeNotFoundException()
+
+        class EmployeeNotFoundException {
+            + EmployeeNotFoundException(id : Long)
+        }
+
+        class EmployeeNotFoundAdvice {
+            + employeeNotFoundHandler(ex : EmployeeNotFoundException) : String
+        }
     }
 
     package Entities{
-        class Employee()
+        class Employee {
+            - id : Long
+            - name : String
+            - role : String
+            + Employee()
+            + Employee(name : String, role : String)
+            + getId() : Long
+            + setId(id : Long) : void
+            + getName() : String
+            + setName(name : String) : void
+            + getRole() : String
+            + setRole(role : String) : void
+            + equals(o : Object) : boolean
+            + hashCode() : int
+            + toString() : String
+        }
     }
 
     package Repositories{
-        class Employee()
-        class LoadDatabase()
+        interface EmployeeRepository {
+            + findAll() : List<Employee>
+            + findById(id : Long) : Optional<Employee>
+            + save(employee : Employee) : Employee
+        }
+
+        class LoadDatabase {
+            - {static} log : Logger
+            + initDatabase(repository : EmployeeRepository) : CommandLineRunner
+        }
     }
 
-    class PayrollApplication{
-        + {static} main (args : string[])
+    class PayrollApplication {
+        + {static} main(args : String[]) : void
     }
 }
 
-package springframework{
+package "org.springframework" {
+    interface JpaRepository<T,ID>
 }
 
-package java.util.List{
-
+package "java.lang" {
+    class RuntimeException
 }
 
 ' Relations
-payroll --> springframework
+EmployeeController --> EmployeeRepository : uses
+EmployeeController ..> Employee : returns
+EmployeeController ..> EmployeeNotFoundException : throws
+EmployeeNotFoundAdvice ..> EmployeeNotFoundException : handles
 
+EmployeeRepository --|> JpaRepository : extends
+EmployeeRepository ..> Employee : manages
+
+LoadDatabase --> EmployeeRepository : initializes
+LoadDatabase ..> Employee : creates
+
+EmployeeNotFoundException --|> RuntimeException : extends
 
 @enduml
