@@ -30,7 +30,7 @@ After cloning this repository:
 * Run the api with the dev profile (inject test data)
 
 ```bash
-    mvn spring-boot:run -Dspring-boot.run.profiles=dev
+    mvn spring-boot:run -D spring-boot.run.profiles=dev
 ```
 
 ```
@@ -63,7 +63,12 @@ After cloning this repository:
 
 ## Test using http requests manually
 
-//TODO
+```bash
+    curl -X GET localhost:8080/api/v1/employees | jq
+```
+```bash
+    curl -X GET localhost:8080/api/v1/employees/1 | jq
+```
 
 ## Run the tests
 
