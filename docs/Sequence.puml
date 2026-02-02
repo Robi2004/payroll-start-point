@@ -9,7 +9,6 @@ actor Client
 participant "EmployeeController" as Controller
 participant "EmployeeRepository" as Repository
 database "H2 Database" as DB
-participant "EmployeeNotFoundAdvice" as Advice
 
 == Get All Employees ==
 
@@ -24,41 +23,6 @@ deactivate DB
 Repository --> Controller: List<Employee>
 deactivate Repository
 Controller --> Client: 200 OK + List<Employee> JSON
-deactivate Controller
-
-== Get Employee By ID (Success) ==
-
-Client -> Controller: GET /api/v1/employees/{id}
-activate Controller
-Controller -> Repository: findById(id)
-activate Repository
-Repository -> DB: SELECT * FROM employees WHERE id = ?
-activate DB
-DB --> Repository: Optional<Employee>
-deactivate DB
-Repository --> Controller: Optional<Employee>
-deactivate Repository
-Controller --> Client: 200 OK + Employee JSON
-deactivate Controller
-
-== Get Employee By ID (Not Found) ==
-
-Client -> Controller: GET /api/v1/employees/{id}
-activate Controller
-Controller -> Repository: findById(id)
-activate Repository
-Repository -> DB: SELECT * FROM employees WHERE id = ?
-activate DB
-DB --> Repository: Optional.empty()
-deactivate DB
-Repository --> Controller: Optional.empty()
-deactivate Repository
-Controller -> Controller: throw EmployeeNotFoundException(id)
-Controller -> Advice: handleEmployeeNotFound()
-activate Advice
-Advice --> Controller: 404 NOT FOUND + Error message
-deactivate Advice
-Controller --> Client: 404 NOT FOUND + Error message
 deactivate Controller
 
 @enduml
