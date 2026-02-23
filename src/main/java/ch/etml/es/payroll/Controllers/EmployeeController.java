@@ -1,6 +1,7 @@
 package ch.etml.es.payroll.Controllers;
 
 import ch.etml.es.payroll.Repositories.EmployeeRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,5 +30,17 @@ public class EmployeeController {
     ch.etml.es.payroll.Entities.Employee one(@PathVariable Long id){
         return repository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
+    }
+
+    /* curl sample :
+    curl -X POST -H "Content-Type: application/json" -d '{"name":"John","role":"Supervisor"}' localhost:8080/api/v1/employees | jq
+    */
+    @PostMapping("/api/v1/employees")
+    @ResponseStatus(HttpStatus.CREATED)
+    ch.etml.es.payroll.Entities.Employee newEmployee(@RequestBody ch.etml.es.payroll.Entities.Employee employee){
+        if(repository.findByName(employee.getName()).isPresent()){
+            throw new EmployeeAlreadyExistsException(employee.getName());
+        }
+        return repository.save(employee);
     }
 }
