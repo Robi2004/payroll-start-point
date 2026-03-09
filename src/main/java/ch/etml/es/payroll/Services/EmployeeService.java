@@ -3,7 +3,9 @@ package ch.etml.es.payroll.Services;
 import ch.etml.es.payroll.Controllers.EmployeeAlreadyExistsException;
 import ch.etml.es.payroll.Repositories.EmployeeRepository;
 import ch.etml.es.payroll.Entities.Employee;
+import org.springframework.stereotype.Service;
 
+@Service
 public class EmployeeService {
 
     private final EmployeeRepository repository;
