@@ -1,8 +1,6 @@
-package ch.etml.es.payroll.Controllers;
+package ch.etml.es.payroll.Employee;
 
-import ch.etml.es.payroll.Entities.Department;
 import ch.etml.es.payroll.PayrollApplication;
-import ch.etml.es.payroll.Repositories.DepartmentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,35 +21,35 @@ import static org.assertj.core.api.Assertions.assertThat;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @ActiveProfiles("test")
-class DepartmentGetTest {
+class EmployeeGetTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private DepartmentRepository departmentRepository;
+    private EmployeeRepository employeeRepository;
 
-    private Department existingDepartment;
+    private Employee existingEmployee;
 
     @BeforeEach
-    void given_an_existing_department() {
+    void given_an_existing_employee() {
         // GIVEN
-        departmentRepository.deleteAll();
+        employeeRepository.deleteAll();
 
-        Department department = new Department("Informatique");
-        Department department1 = new Department("Comptable");
-        existingDepartment = departmentRepository.save(department);
-        departmentRepository.save(department1);
+        Employee employee = new Employee("Doe", "Supervisor");
+        Employee employee2 = new Employee("Smith", "Developer");
+        existingEmployee = employeeRepository.save(employee);
+        employeeRepository.save(employee2);
     }
 
     @Test
-    void when_getting_existing_department_then_success() {
+    void when_getting_existing_employee_then_success() {
         // WHEN
-        ResponseEntity<Department> response =
+        ResponseEntity<Employee> response =
                 restTemplate.getForEntity(
-                        "/api/v1/departments/{id}",
-                        Department.class,
-                        existingDepartment.getId()
+                        "/api/v1/employees/{id}",
+                        Employee.class,
+                        existingEmployee.getId()
                 );
 
         // THEN (HTTP)
@@ -59,21 +57,22 @@ class DepartmentGetTest {
                 .isEqualTo(HttpStatus.OK);
 
         // THEN (body)
-        Department body = response.getBody();
+        Employee body = response.getBody();
         assertThat(body).isNotNull();
-        assertThat(body.getId()).isEqualTo(existingDepartment.getId());
-        assertThat(body.getName()).isEqualTo("Informatique");
+        assertThat(body.getId()).isEqualTo(existingEmployee.getId());
+        assertThat(body.getName()).isEqualTo("Doe");
+        assertThat(body.getRole()).isEqualTo("SUPERVISOR");
     }
 
     @Test
-    void when_getting_all_department_then_success() {
+    void when_getting_all_employees_then_success() {
         // WHEN
-        ResponseEntity<List<Department>> response =
+        ResponseEntity<List<Employee>> response =
                 restTemplate.exchange(
-                        "/api/v1/departments",
+                        "/api/v1/employees",
                         HttpMethod.GET,
                         null,
-                        new ParameterizedTypeReference<List<Department>>() {}
+                        new ParameterizedTypeReference<List<Employee>>() {}
                 );
 
         // THEN (HTTP)
@@ -81,12 +80,12 @@ class DepartmentGetTest {
                 .isEqualTo(HttpStatus.OK);
 
         // THEN (body)
-        List<Department> body = response.getBody();
+        List<Employee> body = response.getBody();
         assertThat(body).isNotNull();
         assertThat(body).hasSizeGreaterThanOrEqualTo(2);
 
         assertThat(body)
-                .extracting(Department::getName)
-                .contains("Informatique", "Comptable");
+                .extracting(Employee::getName)
+                .contains("Doe", "Smith");
     }
 }

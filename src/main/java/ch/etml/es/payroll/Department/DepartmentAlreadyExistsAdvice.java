@@ -1,4 +1,4 @@
-package ch.etml.es.payroll.Controllers;
+package ch.etml.es.payroll.Department;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-public class DepartmentNotFoundAdvice {
+public class DepartmentAlreadyExistsAdvice {
 
     @ResponseBody
-    @ExceptionHandler(DepartmentNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    String departmentNotFoundHandler(DepartmentNotFoundException ex){
+    @ExceptionHandler(DepartmentAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    String departmentAlreadyExistsHandler(DepartmentAlreadyExistsException ex){
         return ex.getMessage();
     }
 }

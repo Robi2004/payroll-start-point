@@ -1,4 +1,4 @@
-package ch.etml.es.payroll.Entities;
+package ch.etml.es.payroll.Employee;
 
 import jakarta.persistence.*;
 

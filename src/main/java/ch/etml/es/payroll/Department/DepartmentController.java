@@ -1,8 +1,5 @@
-package ch.etml.es.payroll.Controllers;
+package ch.etml.es.payroll.Department;
 
-import ch.etml.es.payroll.Entities.Department;
-import ch.etml.es.payroll.Repositories.DepartmentRepository;
-import ch.etml.es.payroll.Services.DepartmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
